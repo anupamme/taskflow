@@ -1,6 +1,23 @@
-# 🚀 TaskFlow - Modern Full-Stack To-Do Application
+<div align="center">
 
-A modern, responsive, and feature-rich task management application built with React, Tailwind CSS, Node.js, Express, and MongoDB. Designed to help users organize, prioritize, and track their daily tasks efficiently.
+# ⚡ TaskFlow — Modern Full-Stack Productivity & Task Board
+
+[![React](https://img.shields.io/badge/React-18.2-61dafb?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
+[![Express](https://img.shields.io/badge/Express-Backend-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38b2ac?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+
+<br />
+
+<p align="center">
+  <img src="assets/preview.png" alt="TaskFlow Dashboard Preview" width="100%" style="border-radius: 14px; box-shadow: 0 12px 40px rgba(99, 102, 241, 0.3);" />
+</p>
+
+</div>
+
+A modern, responsive, and feature-rich task management application built with **React**, **Tailwind CSS**, **Node.js**, **Express**, and **MongoDB**. Designed to help users organize, prioritize, and track their daily tasks efficiently.
 
 TaskFlow features a sleek **Glassmorphism UI** aesthetic, **Dark/Light Theme toggling**, and **Framer Motion layout animations** for a premium desktop and mobile user experience.
 
