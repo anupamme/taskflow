@@ -2,7 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import User from '../models/User.js';
-import authMiddleware, { authLimiter } from '../middleware/auth.js';
+import authMiddleware, { credentialLimiter, oauthLimiter } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -18,13 +18,14 @@ const generateToken = (userId) => {
 // @route   GET api/auth/google
 // @desc    Initiate Google OAuth
 // @access  Public
-router.get('/google', authLimiter, passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google', oauthLimiter, passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 // @route   GET api/auth/google/callback
 // @desc    Google OAuth callback
 // @access  Public
 router.get(
   '/google/callback',
+  oauthLimiter,
   passport.authenticate('google', { session: false }),
   (req, res) => {
     try {
@@ -43,7 +44,7 @@ router.get(
 // @route   POST api/auth/register
 // @desc    Register a new user
 // @access  Public
-router.post('/register', authLimiter, async (req, res) => {
+router.post('/register', credentialLimiter, async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -76,7 +77,7 @@ router.post('/register', authLimiter, async (req, res) => {
 // @route   POST api/auth/login
 // @desc    Authenticate user & get token
 // @access  Public
-router.post('/login', authLimiter, async (req, res) => {
+router.post('/login', credentialLimiter, async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
