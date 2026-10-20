@@ -14,9 +14,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Trust a single reverse-proxy hop so req.ip reflects the real client, not the proxy.
-// Using `true` here would let a client spoof X-Forwarded-For and bypass rate limiting.
-app.set('trust proxy', 1);
+// Trust the configured number of reverse-proxy hops so req.ip reflects the real client,
+// not the proxy. Using `true` here would let a client spoof X-Forwarded-For and bypass
+// rate limiting; the exact hop count depends on deployment topology, so it's configurable.
+const trustProxyHops = Number.parseInt(process.env.TRUST_PROXY_HOPS, 10);
+app.set('trust proxy', Number.isNaN(trustProxyHops) ? 1 : trustProxyHops);
 
 // Middleware
 app.use(cors({

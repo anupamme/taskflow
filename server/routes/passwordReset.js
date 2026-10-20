@@ -1,14 +1,14 @@
 import express from 'express';
 import crypto from 'crypto';
 import User from '../models/User.js';
-import { credentialLimiter } from '../middleware/auth.js';
+import { passwordResetLimiter } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // @route   POST api/auth/forgot-password
 // @desc    Initiate password reset (terminal print simulated email)
 // @access  Public
-router.post('/forgot-password', credentialLimiter, async (req, res) => {
+router.post('/forgot-password', passwordResetLimiter, async (req, res) => {
   const { email } = req.body;
 
   if (!email) {

@@ -9,19 +9,38 @@ const GENERIC_RATE_LIMIT_MESSAGE = { message: 'Too many attempts, please try aga
 const hashEmail = (email) =>
   crypto.createHash('sha256').update(String(email || '').trim().toLowerCase()).digest('hex');
 
-// Cheap, IP-only cap mounted ahead of the body parser on all /api/auth/* routes, so a
-// flood of requests is rejected before the cost of parsing their bodies is paid.
+// Cheap, generous, IP-only filter mounted ahead of the body parser on all /api/auth/*
+// routes, so a flood of requests is rejected before the cost of parsing their bodies
+// is paid. Kept high because it's keyed on IP alone - a shared egress address (office
+// NAT, CI runner) shouldn't lock out everyone behind it. The real per-account budget
+// lives in credentialLimiter/passwordResetLimiter below.
 export const authPreParseLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 60,
+  max: 300,
   standardHeaders: true,
   legacyHeaders: false,
   message: GENERIC_RATE_LIMIT_MESSAGE,
 });
 
-// Guards login/register/forgot-password: keyed on IP + hashed email so one IP can't
-// spray many accounts and one account can't be sprayed from many IPs.
+// Guards login/register: keyed on IP + hashed email so one IP can't spray many
+// accounts and one account can't be sprayed from many IPs. Only failed attempts count
+// (skipSuccessfulRequests) so a legitimate user who signs in correctly doesn't spend
+// the same budget as an attacker guessing wrong.
 export const credentialLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  keyGenerator: (req) => `${req.ip}:${hashEmail(req.body?.email)}`,
+  message: GENERIC_RATE_LIMIT_MESSAGE,
+});
+
+// Guards /forgot-password. Same IP+hashed-email key and budget as credentialLimiter,
+// but counts every request - that route always responds ~200 (even for emails that
+// don't exist) to avoid leaking account existence, so skipSuccessfulRequests would
+// silently disable its rate limit.
+export const passwordResetLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
   standardHeaders: true,
